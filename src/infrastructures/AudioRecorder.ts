@@ -2,6 +2,7 @@ export interface AudioRecorderInterface {
   start(): Promise<void>;
   stop(): Promise<Blob>;
   getData(): Uint8Array;
+  getBufferSize(): number;
 }
 
 export class AudioRecorder implements AudioRecorderInterface {
@@ -61,5 +62,12 @@ export class AudioRecorder implements AudioRecorderInterface {
     const dataArray = new Uint8Array(bufferLength);
     this.analyser.getByteTimeDomainData(dataArray);
     return dataArray;
+  }
+
+  getBufferSize(): number {
+    if (this.analyser == null) {
+      throw new Error('Recorder does not started');
+    }
+    return this.analyser.frequencyBinCount;
   }
 }
