@@ -17,14 +17,17 @@ const App: React.FC = () => {
   const [recording, setRecording] = useState(false);
 
   const animate = () => {
+    animationRef.current = requestAnimationFrame(animate);
     const canvas = canvasRef.current;
     const audio = audioRef.current;
-    animationRef.current = requestAnimationFrame(animate);
     if (canvas == null || audio == null) {
       return;
     }
     const { width, height } = canvas;
-    const ctx = canvas.getContext('2d')!;
+    const ctx = canvas.getContext('2d');
+    if (ctx == null) {
+      return;
+    }
     ctx.fillStyle = '#e0f7fa';
     ctx.fillRect(0, 0, width, height);
 
@@ -58,7 +61,6 @@ const App: React.FC = () => {
 
   useEffect(() => {
     audioRef.current = new AudioRecorder();
-    animate();
     return () => {
       cancelAnimationFrame(animationRef.current);
     };
@@ -73,6 +75,7 @@ const App: React.FC = () => {
           onClick={() => {
             setRecording(true);
             audioRef.current?.start();
+            animate();
           }}
         >
           Record
