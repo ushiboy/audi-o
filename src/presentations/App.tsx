@@ -20,13 +20,23 @@ const App: React.FC = () => {
           }}
         />
         {records.map((r, i) => (
-          <AudioRecordCard key={i} record={r} />
+          <AudioRecordCard
+            key={i}
+            record={r}
+            onDeleteClick={(d) => {
+              setRecords((s) =>
+                s.filter(
+                  ({ title, url }) => !(title === d.title && url === d.url)
+                )
+              );
+            }}
+          />
         ))}
       </Container>
       {draftRecord !== null ? (
         <CreateFileDialog
           onCreatedFile={(title) => {
-            setRecords((s) => [...s, { title, url: draftRecord.url }]);
+            setRecords((s) => s.concat([{ title, url: draftRecord.url }]));
             setDraftRecord(null);
           }}
           onCancelCreate={() => {
