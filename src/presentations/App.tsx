@@ -52,7 +52,7 @@ const App: React.FC = () => {
         x += sliceWidth;
       }
 
-      ctx.lineTo(canvas.width, canvas.height / 2);
+      ctx.lineTo(width, height / 2);
       ctx.stroke();
     } catch (e) {
       // ignore
@@ -88,6 +88,7 @@ const App: React.FC = () => {
             const u = URL.createObjectURL(blob);
             setAudioUrls((s) => [...s, u]);
             setRecording(false);
+            cancelAnimationFrame(animationRef.current);
           }}
         >
           Stop
@@ -98,9 +99,7 @@ const App: React.FC = () => {
         <Card key={i}>
           <div>
             <CardContent>
-              <Typography component="h5" variant="h5">
-                test
-              </Typography>
+              <Typography>test</Typography>
             </CardContent>
             <div>
               <audio src={u} controls />
