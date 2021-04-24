@@ -10,16 +10,17 @@ import {
 import KeyboardVoiceIcon from '@material-ui/icons/KeyboardVoice';
 import StopIcon from '@material-ui/icons/Stop';
 
-import {
-  AudioRecorder,
-  AudioRecorderInterface,
-} from '../infrastructures/AudioRecorder';
+import { AudioRecorder, AudioRecorderInterface } from '../infrastructures';
+import { AudioRecordData } from '../domains';
+
+import { CreateFileDialog } from './CreateFileDialog';
 
 const App: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const audioRef = useRef<AudioRecorderInterface>();
   const animationRef = useRef(0);
-  const [audioUrls, setAudioUrls] = useState<string[]>([]);
+  const [records, setRecords] = useState<AudioRecordData[]>([]);
+  const [draftRecord, setDraftRecord] = useState<AudioRecordData | null>(null);
   const [recording, setRecording] = useState(false);
 
   const animate = () => {
@@ -73,51 +74,64 @@ const App: React.FC = () => {
   }, []);
 
   return (
-    <Container maxWidth="sm">
-      <Box>
-        <canvas ref={canvasRef} style={{ height: 120, width: 640 }} />
-        <Button
-          variant="contained"
-          color="secondary"
-          disabled={recording}
-          startIcon={<KeyboardVoiceIcon />}
-          onClick={() => {
-            setRecording(true);
-            audioRef.current?.start();
-            animate();
-          }}
-        >
-          Record
-        </Button>
-        <Button
-          variant="contained"
-          color="primary"
-          disabled={!recording}
-          startIcon={<StopIcon />}
-          onClick={async () => {
-            const blob = await audioRef.current?.stop();
-            const u = URL.createObjectURL(blob);
-            setAudioUrls((s) => [...s, u]);
-            setRecording(false);
-            cancelAnimationFrame(animationRef.current);
-          }}
-        >
-          Stop
-        </Button>
-      </Box>
-      {audioUrls.map((u, i) => (
-        <Card key={i}>
-          <div>
-            <CardContent>
-              <Typography>test</Typography>
-            </CardContent>
+    <>
+      <Container maxWidth="sm">
+        <Box>
+          <canvas ref={canvasRef} style={{ height: 120, width: 640 }} />
+          <Button
+            variant="contained"
+            color="secondary"
+            disabled={recording}
+            startIcon={<KeyboardVoiceIcon />}
+            onClick={() => {
+              setRecording(true);
+              audioRef.current?.start();
+              animate();
+            }}
+          >
+            Record
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            disabled={!recording}
+            startIcon={<StopIcon />}
+            onClick={async () => {
+              const blob = await audioRef.current?.stop();
+              const url = URL.createObjectURL(blob);
+              setDraftRecord({ title: '', url });
+              setRecording(false);
+              cancelAnimationFrame(animationRef.current);
+            }}
+          >
+            Stop
+          </Button>
+        </Box>
+        {records.map(({ title, url }, i) => (
+          <Card key={i}>
             <div>
-              <audio src={u} controls />
+              <CardContent>
+                <Typography>{title}</Typography>
+              </CardContent>
+              <div>
+                <audio src={url} controls />
+              </div>
             </div>
-          </div>
-        </Card>
-      ))}
-    </Container>
+          </Card>
+        ))}
+      </Container>
+      {draftRecord !== null ? (
+        <CreateFileDialog
+          onCreatedFile={(title) => {
+            setRecords((s) => [...s, { title, url: draftRecord.url }]);
+            setDraftRecord(null);
+          }}
+          onCancelCreate={() => {
+            setDraftRecord(null);
+          }}
+        />
+      ) : null}
+    </>
   );
 };
 
