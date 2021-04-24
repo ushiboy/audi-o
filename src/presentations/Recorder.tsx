@@ -12,19 +12,17 @@ type Props = {
 };
 
 export const Recorder: React.FC<Props> = ({ onRecordedAudio }: Props) => {
+  const audioRecorder = useAudioRecorder();
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const audioRef = useRef<AudioRecorderInterface>();
   const animationRef = useRef(0);
   const [recording, setRecording] = useState(false);
 
   const animate = () => {
     animationRef.current = requestAnimationFrame(animate);
-    drawAmplitude(canvasRef.current!, audioRef.current!);
+    drawAmplitude(canvasRef.current!, audioRecorder);
   };
 
-  const audioRecorder = useAudioRecorder();
   useEffect(() => {
-    audioRef.current = audioRecorder;
     resetAmplitude(canvasRef.current!);
     return () => {
       cancelAnimationFrame(animationRef.current);
@@ -39,9 +37,9 @@ export const Recorder: React.FC<Props> = ({ onRecordedAudio }: Props) => {
         color="secondary"
         disabled={recording}
         startIcon={<KeyboardVoiceIcon />}
-        onClick={() => {
+        onClick={async () => {
           setRecording(true);
-          audioRef.current?.start();
+          await audioRecorder.start();
           animate();
         }}
       >
@@ -53,7 +51,7 @@ export const Recorder: React.FC<Props> = ({ onRecordedAudio }: Props) => {
         disabled={!recording}
         startIcon={<StopIcon />}
         onClick={async () => {
-          const blob = await audioRef.current?.stop();
+          const blob = await audioRecorder.stop();
           setRecording(false);
           cancelAnimationFrame(animationRef.current);
           resetAmplitude(canvasRef.current!);
