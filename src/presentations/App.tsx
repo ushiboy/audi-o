@@ -1,12 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import {
-  Button,
-  Box,
-  Card,
-  CardContent,
-  Container,
-  Typography,
-} from '@material-ui/core';
+import { Button, Box, Container } from '@material-ui/core';
 import KeyboardVoiceIcon from '@material-ui/icons/KeyboardVoice';
 import StopIcon from '@material-ui/icons/Stop';
 
@@ -14,6 +7,7 @@ import { AudioRecorder, AudioRecorderInterface } from '../infrastructures';
 import { AudioRecordData } from '../domains';
 
 import { CreateFileDialog } from './CreateFileDialog';
+import { AudioRecordCard } from './AudioRecordCard';
 
 const App: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -107,17 +101,8 @@ const App: React.FC = () => {
             Stop
           </Button>
         </Box>
-        {records.map(({ title, url }, i) => (
-          <Card key={i}>
-            <div>
-              <CardContent>
-                <Typography>{title}</Typography>
-              </CardContent>
-              <div>
-                <audio src={url} controls />
-              </div>
-            </div>
-          </Card>
+        {records.map((r, i) => (
+          <AudioRecordCard key={i} record={r} />
         ))}
       </Container>
       {draftRecord !== null ? (
