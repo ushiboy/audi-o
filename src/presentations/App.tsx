@@ -1,8 +1,14 @@
 import React, { useRef, useEffect, useState } from 'react';
-import Button from '@material-ui/core/Button';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import Typography from '@material-ui/core/Typography';
+import {
+  Button,
+  Box,
+  Card,
+  CardContent,
+  Container,
+  Typography,
+} from '@material-ui/core';
+import KeyboardVoiceIcon from '@material-ui/icons/KeyboardVoice';
+import StopIcon from '@material-ui/icons/Stop';
 
 import {
   AudioRecorder,
@@ -67,11 +73,14 @@ const App: React.FC = () => {
   }, []);
 
   return (
-    <div className="App">
-      <div>
+    <Container maxWidth="sm">
+      <Box>
+        <canvas ref={canvasRef} style={{ height: 120, width: 640 }} />
         <Button
-          color="primary"
+          variant="contained"
+          color="secondary"
           disabled={recording}
+          startIcon={<KeyboardVoiceIcon />}
           onClick={() => {
             setRecording(true);
             audioRef.current?.start();
@@ -81,8 +90,10 @@ const App: React.FC = () => {
           Record
         </Button>
         <Button
+          variant="contained"
           color="primary"
           disabled={!recording}
+          startIcon={<StopIcon />}
           onClick={async () => {
             const blob = await audioRef.current?.stop();
             const u = URL.createObjectURL(blob);
@@ -93,8 +104,7 @@ const App: React.FC = () => {
         >
           Stop
         </Button>
-      </div>
-      <canvas ref={canvasRef} style={{ height: 120, width: 640 }} />
+      </Box>
       {audioUrls.map((u, i) => (
         <Card key={i}>
           <div>
@@ -107,7 +117,7 @@ const App: React.FC = () => {
           </div>
         </Card>
       ))}
-    </div>
+    </Container>
   );
 };
 
