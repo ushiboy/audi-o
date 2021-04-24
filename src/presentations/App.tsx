@@ -3,9 +3,10 @@ import { Button, Box, Container } from '@material-ui/core';
 import KeyboardVoiceIcon from '@material-ui/icons/KeyboardVoice';
 import StopIcon from '@material-ui/icons/Stop';
 
-import { AudioRecorder, AudioRecorderInterface } from '../infrastructures';
+import { AudioRecorderInterface } from '../infrastructures';
 import { AudioRecordData } from '../domains';
 
+import { useAudioRecorder } from './Context';
 import { CreateFileDialog } from './CreateFileDialog';
 import { AudioRecordCard } from './AudioRecordCard';
 
@@ -60,12 +61,13 @@ const App: React.FC = () => {
     }
   };
 
+  const audioRecorder = useAudioRecorder();
   useEffect(() => {
-    audioRef.current = new AudioRecorder();
+    audioRef.current = audioRecorder;
     return () => {
       cancelAnimationFrame(animationRef.current);
     };
-  }, []);
+  }, [audioRecorder]);
 
   return (
     <>
