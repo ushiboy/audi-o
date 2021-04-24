@@ -19,15 +19,15 @@ export const Recorder: React.FC<Props> = ({ onRecordedAudio }: Props) => {
 
   const animate = () => {
     animationRef.current = requestAnimationFrame(animate);
-    drawAmplitude(canvasRef.current!, audioRecorder);
+    drawAmplitude(canvasRef.current, audioRecorder);
   };
 
   useEffect(() => {
-    resetAmplitude(canvasRef.current!);
+    resetAmplitude(canvasRef.current);
     return () => {
       cancelAnimationFrame(animationRef.current);
     };
-  }, [audioRecorder]);
+  }, []);
 
   return (
     <Box>
@@ -54,7 +54,7 @@ export const Recorder: React.FC<Props> = ({ onRecordedAudio }: Props) => {
           const blob = await audioRecorder.stop();
           setRecording(false);
           cancelAnimationFrame(animationRef.current);
-          resetAmplitude(canvasRef.current!);
+          resetAmplitude(canvasRef.current);
           if (blob !== undefined) {
             onRecordedAudio(blob);
           }
@@ -66,9 +66,15 @@ export const Recorder: React.FC<Props> = ({ onRecordedAudio }: Props) => {
   );
 };
 
-const resetAmplitude = (canvas: HTMLCanvasElement): void => {
+const resetAmplitude = (canvas: HTMLCanvasElement | null | undefined): void => {
+  if (canvas == null) {
+    return;
+  }
   const { width, height } = canvas;
-  const ctx = canvas.getContext('2d')!;
+  const ctx = canvas.getContext('2d');
+  if (ctx == null) {
+    return;
+  }
   ctx.fillStyle = '#e0f7fa';
   ctx.fillRect(0, 0, width, height);
 
@@ -82,11 +88,17 @@ const resetAmplitude = (canvas: HTMLCanvasElement): void => {
 };
 
 const drawAmplitude = (
-  canvas: HTMLCanvasElement,
+  canvas: HTMLCanvasElement | null | undefined,
   audio: AudioRecorderInterface
 ): void => {
+  if (canvas == null) {
+    return;
+  }
   const { width, height } = canvas;
-  const ctx = canvas.getContext('2d')!;
+  const ctx = canvas.getContext('2d');
+  if (ctx == null) {
+    return;
+  }
   ctx.fillStyle = '#e0f7fa';
   ctx.fillRect(0, 0, width, height);
 

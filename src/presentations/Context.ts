@@ -1,9 +1,9 @@
 import React, { useContext } from 'react';
 
-import { AudioRecorderInterface } from '../infrastructures';
+import { AudioRecorderInterface, AudioRecorder } from '../infrastructures';
 
 export const AudioRecorderContext = React.createContext<AudioRecorderInterface>(
-  undefined!
+  new AudioRecorder()
 );
 
 export const useAudioRecorder = (): AudioRecorderInterface => {
