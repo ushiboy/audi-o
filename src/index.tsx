@@ -1,10 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+
+import { AudioRecorder } from './infrastructures';
 import App from './presentations/App';
+import { AudioRecorderContext } from './presentations/Context';
 
 ReactDOM.render(
-  <React.StrictMode>
+  <AudioRecorderContext.Provider value={new AudioRecorder()}>
     <App />
-  </React.StrictMode>,
+  </AudioRecorderContext.Provider>,
   document.getElementById('root')
 );
