@@ -4,12 +4,16 @@ import { Container } from '@material-ui/core';
 import { AudioRecordData } from '../domains';
 
 import { CreateFileDialog } from './CreateFileDialog';
+import { DeleteFileDialog } from './DeleteFileDialog';
 import { AudioRecordCard } from './AudioRecordCard';
 import { Recorder } from './Recorder';
 
 const App: React.FC = () => {
   const [records, setRecords] = useState<AudioRecordData[]>([]);
   const [draftRecord, setDraftRecord] = useState<AudioRecordData | null>(null);
+  const [deletionTarget, setDeletionTarget] = useState<AudioRecordData | null>(
+    null
+  );
   return (
     <>
       <Container maxWidth="sm">
@@ -24,11 +28,7 @@ const App: React.FC = () => {
             key={i}
             record={r}
             onDeleteClick={(d) => {
-              setRecords((s) =>
-                s.filter(
-                  ({ title, url }) => !(title === d.title && url === d.url)
-                )
-              );
+              setDeletionTarget(d);
             }}
           />
         ))}
@@ -41,6 +41,22 @@ const App: React.FC = () => {
           }}
           onCancelCreate={() => {
             setDraftRecord(null);
+          }}
+        />
+      ) : null}
+      {deletionTarget !== null ? (
+        <DeleteFileDialog
+          record={deletionTarget}
+          onDeleteFile={(d) => {
+            setRecords((s) =>
+              s.filter(
+                ({ title, url }) => !(title === d.title && url === d.url)
+              )
+            );
+            setDeletionTarget(null);
+          }}
+          onCancelDelete={() => {
+            setDeletionTarget(null);
           }}
         />
       ) : null}
