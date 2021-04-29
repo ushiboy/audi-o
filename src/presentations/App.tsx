@@ -5,6 +5,7 @@ import {
   IconButton,
   Link,
   Toolbar,
+  Tooltip,
   Typography,
 } from '@material-ui/core';
 import { createStyles, makeStyles } from '@material-ui/core/styles';
@@ -48,9 +49,11 @@ const App: React.FC = () => {
             target="_blank"
             rel="noopener"
           >
-            <IconButton edge="end" color="inherit">
-              <GitHubIcon />
-            </IconButton>
+            <Tooltip title="github">
+              <IconButton edge="end" color="inherit">
+                <GitHubIcon />
+              </IconButton>
+            </Tooltip>
           </Link>
         </Toolbar>
       </AppBar>
