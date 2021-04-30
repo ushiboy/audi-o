@@ -4,6 +4,7 @@ import {
   Card,
   CardContent,
   CardActions,
+  Tooltip,
   Typography,
 } from '@material-ui/core';
 import GetAppIcon from '@material-ui/icons/GetApp';
@@ -28,25 +29,29 @@ export const AudioRecordCard: React.FC<Props> = ({
       </CardContent>
       <CardActions>
         <audio src={url} controls />
-        <IconButton
-          aria-label="download"
-          onClick={() => {
-            const a = document.createElement('a');
-            a.download = `${title}.ogg`;
-            a.href = url;
-            a.click();
-          }}
-        >
-          <GetAppIcon />
-        </IconButton>
-        <IconButton
-          aria-label="delete"
-          onClick={() => {
-            onDeleteClick(record);
-          }}
-        >
-          <DeleteIcon />
-        </IconButton>
+        <Tooltip title="download">
+          <IconButton
+            aria-label="download"
+            onClick={() => {
+              const a = document.createElement('a');
+              a.download = `${title}.ogg`;
+              a.href = url;
+              a.click();
+            }}
+          >
+            <GetAppIcon />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="delete">
+          <IconButton
+            aria-label="delete"
+            onClick={() => {
+              onDeleteClick(record);
+            }}
+          >
+            <DeleteIcon />
+          </IconButton>
+        </Tooltip>
       </CardActions>
     </Card>
   );

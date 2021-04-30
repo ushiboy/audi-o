@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';
 import { AudioRecorder } from './infrastructures';
 import App from './presentations/App';
 import { AudioRecorderContext } from './presentations/Context';
+import './index.css';
 
 ReactDOM.render(
   <AudioRecorderContext.Provider value={new AudioRecorder()}>
