@@ -1,6 +1,6 @@
 export type AudioRecordDraft = {
   title: string;
-  url: string;
+  data: Blob;
 };
 
 export type AudioRecord = {

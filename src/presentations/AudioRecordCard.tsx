@@ -21,7 +21,8 @@ export const AudioRecordCard: React.FC<Props> = ({
   record,
   onDeleteClick,
 }: Props) => {
-  const { title, url } = record;
+  const { title, data } = record;
+  const url = URL.createObjectURL(data);
   return (
     <Card>
       <CardContent>

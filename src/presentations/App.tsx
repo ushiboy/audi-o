@@ -60,8 +60,7 @@ const App: React.FC = () => {
       <Container maxWidth="sm">
         <Recorder
           onRecordedAudio={(blob) => {
-            const url = URL.createObjectURL(blob);
-            setDraftRecord({ title: '', url });
+            setDraftRecord({ title: '', data: blob });
           }}
         />
         {records.map((r, i) => (
@@ -77,7 +76,7 @@ const App: React.FC = () => {
       {draftRecord !== null ? (
         <CreateFileDialog
           onCreatedFile={(title) => {
-            setRecords((s) => s.concat([{ title, url: draftRecord.url }]));
+            setRecords((s) => s.concat([{ title, data: draftRecord.data }]));
             setDraftRecord(null);
           }}
           onCancelCreate={() => {
@@ -91,7 +90,7 @@ const App: React.FC = () => {
           onDeleteFile={(d) => {
             setRecords((s) =>
               s.filter(
-                ({ title, url }) => !(title === d.title && url === d.url)
+                ({ title, data }) => !(title === d.title && data === d.data)
               )
             );
             setDeletionTarget(null);
