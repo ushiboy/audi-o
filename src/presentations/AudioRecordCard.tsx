@@ -10,11 +10,11 @@ import {
 import GetAppIcon from '@material-ui/icons/GetApp';
 import DeleteIcon from '@material-ui/icons/Delete';
 
-import { AudioRecordData } from '../domains';
+import { AudioRecordDraft } from '../domains';
 
 type Props = {
-  record: AudioRecordData;
-  onDeleteClick: (record: AudioRecordData) => void;
+  record: AudioRecordDraft;
+  onDeleteClick: (record: AudioRecordDraft) => void;
 };
 
 export const AudioRecordCard: React.FC<Props> = ({

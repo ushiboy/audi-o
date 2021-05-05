@@ -11,7 +11,7 @@ import {
 import { createStyles, makeStyles } from '@material-ui/core/styles';
 import GitHubIcon from '@material-ui/icons/GitHub';
 
-import { AudioRecordData } from '../domains';
+import { AudioRecordDraft } from '../domains';
 
 import { CreateFileDialog } from './CreateFileDialog';
 import { DeleteFileDialog } from './DeleteFileDialog';
@@ -31,9 +31,9 @@ const useStyles = makeStyles(() =>
 
 const App: React.FC = () => {
   const classes = useStyles();
-  const [records, setRecords] = useState<AudioRecordData[]>([]);
-  const [draftRecord, setDraftRecord] = useState<AudioRecordData | null>(null);
-  const [deletionTarget, setDeletionTarget] = useState<AudioRecordData | null>(
+  const [records, setRecords] = useState<AudioRecordDraft[]>([]);
+  const [draftRecord, setDraftRecord] = useState<AudioRecordDraft | null>(null);
+  const [deletionTarget, setDeletionTarget] = useState<AudioRecordDraft | null>(
     null
   );
   return (
