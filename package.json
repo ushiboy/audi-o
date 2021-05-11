@@ -13,6 +13,7 @@
     "@types/node": "^12.0.0",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
+    "dexie": "^3.0.3",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-scripts": "4.0.3",
@@ -20,7 +21,7 @@
     "web-vitals": "^1.0.1"
   },
   "scripts": {
-    "start": "BROWSER=false react-scripts start",
+    "start": "HTTPS=true BROWSER=false react-scripts start",
     "build": "PUBLIC_URL=./ GENERATE_SOURCEMAP=false react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
