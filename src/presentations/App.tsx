@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   AppBar,
   Container,
@@ -18,6 +18,7 @@ import { DeleteFileDialog } from './DeleteFileDialog';
 import { AudioRecordCard } from './AudioRecordCard';
 import { Recorder } from './Recorder';
 import { AudioControlBar } from './AudioControlBar';
+import { useRepository } from './Context';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -38,6 +39,14 @@ const App: React.FC = () => {
   const [deletionTarget, setDeletionTarget] = useState<AudioRecordDraft | null>(
     null
   );
+  const repository = useRepository();
+  useEffect(() => {
+    (async function () {
+      const r = await repository.fetchAudioRecords();
+      console.log(r);
+    })();
+  }, [repository]);
+
   return (
     <div className={classes.root}>
       <AppBar position="static">
@@ -80,7 +89,9 @@ const App: React.FC = () => {
       </Container>
       {draftRecord !== null ? (
         <CreateFileDialog
-          onCreatedFile={(title) => {
+          onCreatedFile={async (title) => {
+            await repository.createAudioRecord(title, draftRecord.data);
+
             setRecords((s) => s.concat([{ title, data: draftRecord.data }]));
             setDraftRecord(null);
           }}
