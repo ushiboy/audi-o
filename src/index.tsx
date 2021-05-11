@@ -1,14 +1,19 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import { AudioRecorder } from './infrastructures';
+import { AudioRecorder, LocalRepository } from './infrastructures';
 import App from './presentations/App';
-import { AudioRecorderContext } from './presentations/Context';
+import {
+  AudioRecorderContext,
+  RepositoryContext,
+} from './presentations/Context';
 import './index.css';
 
 ReactDOM.render(
-  <AudioRecorderContext.Provider value={new AudioRecorder()}>
-    <App />
-  </AudioRecorderContext.Provider>,
+  <RepositoryContext.Provider value={new LocalRepository()}>
+    <AudioRecorderContext.Provider value={new AudioRecorder()}>
+      <App />
+    </AudioRecorderContext.Provider>
+  </RepositoryContext.Provider>,
   document.getElementById('root')
 );
