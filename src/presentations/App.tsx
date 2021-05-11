@@ -11,12 +11,13 @@ import {
 import { createStyles, makeStyles } from '@material-ui/core/styles';
 import GitHubIcon from '@material-ui/icons/GitHub';
 
-import { AudioRecordData } from '../domains';
+import { AudioRecordDraft } from '../domains';
 
 import { CreateFileDialog } from './CreateFileDialog';
 import { DeleteFileDialog } from './DeleteFileDialog';
 import { AudioRecordCard } from './AudioRecordCard';
 import { Recorder } from './Recorder';
+import { AudioControlBar } from './AudioControlBar';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -31,9 +32,10 @@ const useStyles = makeStyles(() =>
 
 const App: React.FC = () => {
   const classes = useStyles();
-  const [records, setRecords] = useState<AudioRecordData[]>([]);
-  const [draftRecord, setDraftRecord] = useState<AudioRecordData | null>(null);
-  const [deletionTarget, setDeletionTarget] = useState<AudioRecordData | null>(
+  const [records, setRecords] = useState<AudioRecordDraft[]>([]);
+  const [draftRecord, setDraftRecord] = useState<AudioRecordDraft | null>(null);
+  const [playTarget, setPlayTarget] = useState<AudioRecordDraft | null>(null);
+  const [deletionTarget, setDeletionTarget] = useState<AudioRecordDraft | null>(
     null
   );
   return (
@@ -60,14 +62,16 @@ const App: React.FC = () => {
       <Container maxWidth="sm">
         <Recorder
           onRecordedAudio={(blob) => {
-            const url = URL.createObjectURL(blob);
-            setDraftRecord({ title: '', url });
+            setDraftRecord({ title: '', data: blob });
           }}
         />
         {records.map((r, i) => (
           <AudioRecordCard
             key={i}
             record={r}
+            onPlayClick={(d) => {
+              setPlayTarget(d);
+            }}
             onDeleteClick={(d) => {
               setDeletionTarget(d);
             }}
@@ -77,7 +81,7 @@ const App: React.FC = () => {
       {draftRecord !== null ? (
         <CreateFileDialog
           onCreatedFile={(title) => {
-            setRecords((s) => s.concat([{ title, url: draftRecord.url }]));
+            setRecords((s) => s.concat([{ title, data: draftRecord.data }]));
             setDraftRecord(null);
           }}
           onCancelCreate={() => {
@@ -91,15 +95,25 @@ const App: React.FC = () => {
           onDeleteFile={(d) => {
             setRecords((s) =>
               s.filter(
-                ({ title, url }) => !(title === d.title && url === d.url)
+                ({ title, data }) => !(title === d.title && data === d.data)
               )
             );
+            if (
+              playTarget !== null &&
+              playTarget.title === d.title &&
+              playTarget.data === d.data
+            ) {
+              setPlayTarget(null);
+            }
             setDeletionTarget(null);
           }}
           onCancelDelete={() => {
             setDeletionTarget(null);
           }}
         />
+      ) : null}
+      {playTarget !== null ? (
+        <AudioControlBar audioRecord={playTarget} />
       ) : null}
     </div>
   );

@@ -9,11 +9,11 @@ import {
 } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 
-import { AudioRecordData } from '../domains';
+import { AudioRecordDraft } from '../domains';
 
 type Props = {
-  record: AudioRecordData;
-  onDeleteFile: (record: AudioRecordData) => void;
+  record: AudioRecordDraft;
+  onDeleteFile: (record: AudioRecordDraft) => void;
   onCancelDelete: () => void;
 };
 

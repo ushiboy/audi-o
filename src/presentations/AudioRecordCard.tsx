@@ -9,32 +9,45 @@ import {
 } from '@material-ui/core';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import DeleteIcon from '@material-ui/icons/Delete';
+import PlayCircleFilledIcon from '@material-ui/icons/PlayCircleFilled';
 
-import { AudioRecordData } from '../domains';
+import { AudioRecordDraft } from '../domains';
 
 type Props = {
-  record: AudioRecordData;
-  onDeleteClick: (record: AudioRecordData) => void;
+  record: AudioRecordDraft;
+  onPlayClick: (record: AudioRecordDraft) => void;
+  onDeleteClick: (record: AudioRecordDraft) => void;
 };
 
 export const AudioRecordCard: React.FC<Props> = ({
   record,
+  onPlayClick,
   onDeleteClick,
 }: Props) => {
-  const { title, url } = record;
+  const { title, data } = record;
   return (
     <Card>
       <CardContent>
         <Typography>{title}</Typography>
       </CardContent>
       <CardActions>
-        <audio src={url} controls />
+        <Tooltip title="play">
+          <IconButton
+            aria-label="play"
+            onClick={() => {
+              onPlayClick(record);
+            }}
+          >
+            <PlayCircleFilledIcon />
+          </IconButton>
+        </Tooltip>
         <Tooltip title="download">
           <IconButton
             aria-label="download"
             onClick={() => {
               const a = document.createElement('a');
               a.download = `${title}.ogg`;
+              const url = URL.createObjectURL(data);
               a.href = url;
               a.click();
             }}
