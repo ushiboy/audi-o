@@ -17,6 +17,7 @@ import { CreateFileDialog } from './CreateFileDialog';
 import { DeleteFileDialog } from './DeleteFileDialog';
 import { AudioRecordCard } from './AudioRecordCard';
 import { Recorder } from './Recorder';
+import { AudioControlBar } from './AudioControlBar';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -33,6 +34,7 @@ const App: React.FC = () => {
   const classes = useStyles();
   const [records, setRecords] = useState<AudioRecordDraft[]>([]);
   const [draftRecord, setDraftRecord] = useState<AudioRecordDraft | null>(null);
+  const [playTarget, setPlayTarget] = useState<AudioRecordDraft | null>(null);
   const [deletionTarget, setDeletionTarget] = useState<AudioRecordDraft | null>(
     null
   );
@@ -67,6 +69,9 @@ const App: React.FC = () => {
           <AudioRecordCard
             key={i}
             record={r}
+            onPlayClick={(d) => {
+              setPlayTarget(d);
+            }}
             onDeleteClick={(d) => {
               setDeletionTarget(d);
             }}
@@ -93,12 +98,22 @@ const App: React.FC = () => {
                 ({ title, data }) => !(title === d.title && data === d.data)
               )
             );
+            if (
+              playTarget !== null &&
+              playTarget.title === d.title &&
+              playTarget.data === d.data
+            ) {
+              setPlayTarget(null);
+            }
             setDeletionTarget(null);
           }}
           onCancelDelete={() => {
             setDeletionTarget(null);
           }}
         />
+      ) : null}
+      {playTarget !== null ? (
+        <AudioControlBar audioRecord={playTarget} />
       ) : null}
     </div>
   );
