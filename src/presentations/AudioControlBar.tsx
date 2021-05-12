@@ -1,26 +1,32 @@
 import React, { useEffect, useRef } from 'react';
 import { AppBar, Toolbar, Typography } from '@material-ui/core';
 
-import { AudioRecordDraft } from '../domains';
+import { AudioRecordOutline } from '../domains';
+
+import { useRepository } from './Context';
 
 type Props = {
-  audioRecord: AudioRecordDraft;
+  audioRecord: AudioRecordOutline;
 };
 
 export const AudioControlBar: React.FC<Props> = ({ audioRecord }: Props) => {
   const ref = useRef<HTMLAudioElement>(null);
-  const { title, data } = audioRecord;
+  const { id, title } = audioRecord;
+  const repository = useRepository();
   useEffect(() => {
     const audio = ref.current;
     if (audio === null) {
       return;
     }
-    audio.src = URL.createObjectURL(data);
-    audio.play();
+    (async function () {
+      const r = await repository.fetchAudioRecord(id);
+      audio.src = URL.createObjectURL(r.data);
+      audio.play();
+    })();
     return () => {
       audio.pause();
     };
-  }, [audioRecord]);
+  }, [audioRecord, repository]);
   return (
     <AppBar position="fixed" style={{ top: 'auto', bottom: 0 }}>
       <Toolbar>

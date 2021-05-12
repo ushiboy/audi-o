@@ -11,12 +11,14 @@ import GetAppIcon from '@material-ui/icons/GetApp';
 import DeleteIcon from '@material-ui/icons/Delete';
 import PlayCircleFilledIcon from '@material-ui/icons/PlayCircleFilled';
 
-import { AudioRecordDraft } from '../domains';
+import { AudioRecordOutline } from '../domains';
+
+import { useRepository } from './Context';
 
 type Props = {
-  record: AudioRecordDraft;
-  onPlayClick: (record: AudioRecordDraft) => void;
-  onDeleteClick: (record: AudioRecordDraft) => void;
+  record: AudioRecordOutline;
+  onPlayClick: (record: AudioRecordOutline) => void;
+  onDeleteClick: (record: AudioRecordOutline) => void;
 };
 
 export const AudioRecordCard: React.FC<Props> = ({
@@ -24,7 +26,8 @@ export const AudioRecordCard: React.FC<Props> = ({
   onPlayClick,
   onDeleteClick,
 }: Props) => {
-  const { title, data } = record;
+  const { id, title } = record;
+  const repository = useRepository();
   return (
     <Card>
       <CardContent>
@@ -44,10 +47,11 @@ export const AudioRecordCard: React.FC<Props> = ({
         <Tooltip title="download">
           <IconButton
             aria-label="download"
-            onClick={() => {
+            onClick={async () => {
+              const r = await repository.fetchAudioRecord(id);
               const a = document.createElement('a');
               a.download = `${title}.ogg`;
-              const url = URL.createObjectURL(data);
+              const url = URL.createObjectURL(r.data);
               a.href = url;
               a.click();
             }}
