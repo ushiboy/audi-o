@@ -23,11 +23,16 @@ export class LocalRepository implements RepositoryInterface {
   private db: AppDatabase = new AppDatabase();
   async fetchAudioRecords(): Promise<AudioRecordOutline[]> {
     const records = await this.db.audioRecords.orderBy('createdAt').toArray();
-    return records.map(({ id, title, createdAt }) => ({
-      id,
-      title,
-      createdAt,
-    }));
+    return records.map(({ id, title, createdAt }) => {
+      if (id === undefined) {
+        throw new Error('id is undefined');
+      }
+      return {
+        id,
+        title,
+        createdAt,
+      };
+    });
   }
 
   async fetchAudioRecord(id: number): Promise<AudioRecord> {
@@ -38,14 +43,21 @@ export class LocalRepository implements RepositoryInterface {
     return r;
   }
 
-  async createAudioRecord(title: string, data: Blob): Promise<AudioRecord> {
+  async createAudioRecord(
+    title: string,
+    data: Blob
+  ): Promise<AudioRecordOutline> {
     const createdAt = new Date();
     const id = await this.db.audioRecords.add({
       title,
       data,
       createdAt,
     });
-    return this.fetchAudioRecord(id);
+    return {
+      id,
+      title,
+      createdAt,
+    };
   }
 
   async deleteAudioRecord(id: number): Promise<void> {
