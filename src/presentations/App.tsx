@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   AppBar,
   Container,
@@ -11,13 +11,14 @@ import {
 import { createStyles, makeStyles } from '@material-ui/core/styles';
 import GitHubIcon from '@material-ui/icons/GitHub';
 
-import { AudioRecordDraft } from '../domains';
+import { AudioRecordDraft, AudioRecordOutline } from '../domains';
 
 import { CreateFileDialog } from './CreateFileDialog';
 import { DeleteFileDialog } from './DeleteFileDialog';
 import { AudioRecordCard } from './AudioRecordCard';
 import { Recorder } from './Recorder';
 import { AudioControlBar } from './AudioControlBar';
+import { useRepository } from './Context';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -32,12 +33,21 @@ const useStyles = makeStyles(() =>
 
 const App: React.FC = () => {
   const classes = useStyles();
-  const [records, setRecords] = useState<AudioRecordDraft[]>([]);
+  const [records, setRecords] = useState<AudioRecordOutline[]>([]);
   const [draftRecord, setDraftRecord] = useState<AudioRecordDraft | null>(null);
-  const [playTarget, setPlayTarget] = useState<AudioRecordDraft | null>(null);
-  const [deletionTarget, setDeletionTarget] = useState<AudioRecordDraft | null>(
-    null
-  );
+  const [playTarget, setPlayTarget] = useState<AudioRecordOutline | null>(null);
+  const [
+    deletionTarget,
+    setDeletionTarget,
+  ] = useState<AudioRecordOutline | null>(null);
+  const repository = useRepository();
+  useEffect(() => {
+    (async function () {
+      const r = await repository.fetchAudioRecords();
+      setRecords(r);
+    })();
+  }, [repository]);
+
   return (
     <div className={classes.root}>
       <AppBar position="static">
@@ -65,9 +75,9 @@ const App: React.FC = () => {
             setDraftRecord({ title: '', data: blob });
           }}
         />
-        {records.map((r, i) => (
+        {records.map((r) => (
           <AudioRecordCard
-            key={i}
+            key={r.id}
             record={r}
             onPlayClick={(d) => {
               setPlayTarget(d);
@@ -80,8 +90,12 @@ const App: React.FC = () => {
       </Container>
       {draftRecord !== null ? (
         <CreateFileDialog
-          onCreatedFile={(title) => {
-            setRecords((s) => s.concat([{ title, data: draftRecord.data }]));
+          onCreatedFile={async (title) => {
+            const r = await repository.createAudioRecord(
+              title,
+              draftRecord.data
+            );
+            setRecords((s) => s.concat([r]));
             setDraftRecord(null);
           }}
           onCancelCreate={() => {
@@ -92,17 +106,10 @@ const App: React.FC = () => {
       {deletionTarget !== null ? (
         <DeleteFileDialog
           record={deletionTarget}
-          onDeleteFile={(d) => {
-            setRecords((s) =>
-              s.filter(
-                ({ title, data }) => !(title === d.title && data === d.data)
-              )
-            );
-            if (
-              playTarget !== null &&
-              playTarget.title === d.title &&
-              playTarget.data === d.data
-            ) {
+          onDeleteFile={async (d) => {
+            await repository.deleteAudioRecord(d.id);
+            setRecords((s) => s.filter(({ id }) => id !== d.id));
+            if (playTarget !== null && playTarget.id === d.id) {
               setPlayTarget(null);
             }
             setDeletionTarget(null);
