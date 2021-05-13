@@ -7,6 +7,7 @@ export type AudioRecordOutline = {
   id: number;
   title: string;
   createdAt: Date;
+  modifiedAt: Date;
 };
 
 export type AudioRecord = {
@@ -14,4 +15,5 @@ export type AudioRecord = {
   title: string;
   data: Blob;
   createdAt: Date;
+  modifiedAt: Date;
 };
