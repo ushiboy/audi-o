@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
   AppBar,
+  Box,
   Container,
   IconButton,
   Link,
@@ -50,7 +51,7 @@ const App: React.FC = () => {
 
   return (
     <div className={classes.root}>
-      <AppBar position="static">
+      <AppBar position="fixed">
         <Toolbar>
           <Typography variant="h6" className={classes.title}>
             Audi-O
@@ -69,23 +70,24 @@ const App: React.FC = () => {
           </Link>
         </Toolbar>
       </AppBar>
-      <Container maxWidth="sm">
+      <Container fixed style={{ marginTop: 70 }}>
         <Recorder
           onRecordedAudio={(blob) => {
             setDraftRecord({ title: '', data: blob });
           }}
         />
         {records.map((r) => (
-          <AudioRecordCard
-            key={r.id}
-            record={r}
-            onPlayClick={(d) => {
-              setPlayTarget(d);
-            }}
-            onDeleteClick={(d) => {
-              setDeletionTarget(d);
-            }}
-          />
+          <Box key={r.id} pt={2}>
+            <AudioRecordCard
+              record={r}
+              onPlayClick={(d) => {
+                setPlayTarget(d);
+              }}
+              onDeleteClick={(d) => {
+                setDeletionTarget(d);
+              }}
+            />
+          </Box>
         ))}
       </Container>
       {draftRecord !== null ? (

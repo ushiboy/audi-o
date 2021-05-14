@@ -31,8 +31,9 @@ export const Recorder: React.FC<Props> = ({ onRecordedAudio }: Props) => {
 
   return (
     <Box>
-      <canvas ref={canvasRef} style={{ height: 120, width: 640 }} />
+      <canvas ref={canvasRef} style={{ height: 120, width: '100%' }} />
       <Button
+        style={{ marginRight: 5 }}
         variant="contained"
         color="secondary"
         disabled={recording}

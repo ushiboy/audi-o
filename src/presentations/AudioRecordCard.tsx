@@ -10,6 +10,7 @@ import {
 import GetAppIcon from '@material-ui/icons/GetApp';
 import DeleteIcon from '@material-ui/icons/Delete';
 import PlayCircleFilledIcon from '@material-ui/icons/PlayCircleFilled';
+import { format } from 'date-fns';
 
 import { AudioRecordOutline } from '../domains';
 
@@ -26,7 +27,7 @@ export const AudioRecordCard: React.FC<Props> = ({
   onPlayClick,
   onDeleteClick,
 }: Props) => {
-  const { id, title } = record;
+  const { id, title, modifiedAt } = record;
   const repository = useRepository();
   return (
     <Card>
@@ -69,6 +70,7 @@ export const AudioRecordCard: React.FC<Props> = ({
             <DeleteIcon />
           </IconButton>
         </Tooltip>
+        <Typography>{format(modifiedAt, 'yyyy/MM/dd HH:mm:ss')}</Typography>
       </CardActions>
     </Card>
   );
